@@ -1,16 +1,18 @@
+import uuid
+
 from django.db import models
 
 
-class SoftDeleteManager(models.Manager):
+class AbstractBaseManager(models.Manager):
 
     def get_queryset(self):
         return super().get_queryset().filter(is_deleted=False)
 
 
-class SoftDeleteBaseModel(models.Model):
-
+class AbstractBaseModel(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     is_deleted = models.BooleanField(default=False)
-    objects = SoftDeleteManager()
+    objects = AbstractBaseManager()
 
     def soft_delete(self):
         self.is_deleted = True

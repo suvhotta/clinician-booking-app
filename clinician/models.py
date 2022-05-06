@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 
-from app.models import SoftDeleteBaseModel
+from app.models import AbstractBaseModel
 
 
 User = get_user_model()
 
 
-class Clinician(SoftDeleteBaseModel):
+class Clinician(AbstractBaseModel):
     # Relationships
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Fields
