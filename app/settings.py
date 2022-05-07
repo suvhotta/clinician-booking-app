@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     #Installed/Created Apps
     'rest_framework',
     'clinician',
+    'patient',
 ]
 
 MIDDLEWARE = [
