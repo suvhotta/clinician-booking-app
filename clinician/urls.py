@@ -10,8 +10,12 @@ router.register(r'clinicians', views.ClinicianViewset)
 available_slots_list = views.ClinicianAvailabilityViewset.as_view({'get': 'list', 'post': 'create'})
 available_slot_details = views.ClinicianAvailabilityViewset.as_view({'get': 'retrieve'})
 
+book_clinician_availability = views.BookClinicianAvailabilityViewset.as_view({'post': 'create', 'get': 'list'})
+
+
 urlpatterns = [
     path("", include(router.urls)),
     path(r"clinicians/<str:clinician_id>/available-slots/", available_slots_list),
     path(r"clinicians/<str:clinician_id>/available-slots/<str:availability_id>/", available_slot_details),
+    path(r"clinicians/<str:clinician_id>/bookings/", book_clinician_availability),
 ]
