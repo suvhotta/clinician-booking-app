@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+from django.shortcuts import get_object_or_404
+from rest_framework.validators import ValidationError
 
 from app.models import AbstractBaseModel
 
@@ -14,12 +16,6 @@ class Clinician(AbstractBaseModel):
     # Fields
     degree_conferred_date = models.DateField()
     specializations = ArrayField(models.CharField(max_length=50))
-
-
-# class AvailabilityManager(models.Manager):
-#
-#     def get_queryset(self):
-#         return super().get_queryset().filter(is_available=True)
 
 
 class ClinicianAvailability(AbstractBaseModel):
@@ -37,3 +33,16 @@ class ClinicianAvailability(AbstractBaseModel):
     @staticmethod
     def get_clinician_slots(clinician_id):
         return ClinicianAvailability.objects.filter(clinician__pk=clinician_id)
+
+    @staticmethod
+    def get_all_slots_by_availability(clinician_id, is_available):
+        return ClinicianAvailability.objects.filter(is_available=is_available, clinician__pk=clinician_id)
+    
+    @staticmethod
+    def fetch_available_slot(time_slot_id):
+        try:
+            slot = get_object_or_404(ClinicianAvailability.get_all_available_slots(), pk=time_slot_id)
+            return slot
+        except Exception as e:
+            raise ValidationError("The chosen slot isn't available")
+

@@ -2,6 +2,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 
+from booking.models import Booking
+from booking.serializers import BookingSerializer
 from clinician.models import Clinician, ClinicianAvailability
 from clinician.serializers import ClinicianSerializer, AvailabilitySerializer
 
@@ -53,3 +55,17 @@ class ClinicianAvailabilityViewset(viewsets.ViewSet):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class BookClinicianAvailabilityViewset(viewsets.ViewSet):
+    def create(self, request, clinician_id, availability_id):
+        request.data['time_slot_id'] = availability_id
+        serializer = BookingSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, clinician_id):
+        queryset = Booking.get_clinician_booking_list(clinician_id)
+        serializer = BookingSerializer(queryset, many=True)
+        return Response(serializer.data)
