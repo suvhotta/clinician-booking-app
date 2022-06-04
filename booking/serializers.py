@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 
@@ -25,6 +26,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         super().validate(data)
+        # The self.instance will differentiate between create flow and update flow.
         if self.instance and not data.get('status', None):
             raise ValidationError('Status is a mandatory field for update')
         if self.instance and data['status'] == Booking.BookingStatus.CANCELLED and not data.get('cancellation_reason', None):
@@ -35,8 +37,9 @@ class BookingSerializer(serializers.ModelSerializer):
         patient_id = validated_data.pop('patient_id')
         time_slot_id = validated_data.pop('time_slot_id')
         patient = Patient.objects.get(pk=patient_id)
-        time_slot = ClinicianAvailability.fetch_available_slot(time_slot_id)
-        return Booking.objects.create(patient=patient, clinician_availability=time_slot, **validated_data)
+        with transaction.atomic():
+            time_slot = ClinicianAvailability.fetch_available_slot(time_slot_id)
+            return Booking.objects.create(patient=patient, clinician_availability=time_slot, **validated_data)
 
     def to_representation(self, instance):
         booking_record = super().to_representation(instance)
