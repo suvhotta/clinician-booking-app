@@ -32,3 +32,11 @@ class Booking(AbstractBaseModel):
     @staticmethod
     def get_patient_booking_list(patient_id):
         return Booking.objects.filter(patient__pk=patient_id)
+
+    @staticmethod
+    def check_patient_availability(patient_id, timeslot):
+        return Booking.objects.filter(
+            clinician_availability__start_time=timeslot.start_time,
+            patient_id=patient_id,
+            status=Booking.BookingStatus.PENDING
+        ).first()

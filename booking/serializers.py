@@ -39,6 +39,10 @@ class BookingSerializer(serializers.ModelSerializer):
         patient = Patient.objects.get(pk=patient_id)
         with transaction.atomic():
             time_slot = ClinicianAvailability.fetch_available_slot(time_slot_id)
+            is_patient_booked = Booking.check_patient_availability(patient_id, time_slot)
+            if is_patient_booked:
+                raise ValidationError("Patient already has an appointment for the same timeslot")
+
             return Booking.objects.create(patient=patient, clinician_availability=time_slot, **validated_data)
 
     def to_representation(self, instance):
