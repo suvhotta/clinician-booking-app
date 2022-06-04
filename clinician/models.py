@@ -35,13 +35,13 @@ class ClinicianAvailability(AbstractBaseModel):
         return ClinicianAvailability.objects.filter(clinician__pk=clinician_id)
 
     @staticmethod
-    def get_all_slots_by_availability(clinician_id, is_available):
-        return ClinicianAvailability.objects.filter(is_available=is_available, clinician__pk=clinician_id)
+    def get_all_slots_by_availability(is_available=True):
+        return ClinicianAvailability.objects.filter(is_available=is_available)
     
     @staticmethod
     def fetch_available_slot(time_slot_id):
         try:
-            slot = get_object_or_404(ClinicianAvailability.get_all_available_slots(), pk=time_slot_id)
+            slot = get_object_or_404(ClinicianAvailability.get_all_slots_by_availability(), pk=time_slot_id)
             return slot
         except Exception as e:
             raise ValidationError("The chosen slot isn't available")
