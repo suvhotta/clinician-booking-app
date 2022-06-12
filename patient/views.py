@@ -50,7 +50,7 @@ class PatientBookingViewset(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         booking_id = kwargs.get("booking_id")
-        patient_id = kwargs.get("booking_id")
+        patient_id = kwargs.get("patient_id")
         booking = get_object_or_404(self.get_queryset(patient_id=patient_id), pk=booking_id)
         serializer = BookingSerializer(booking)
         return Response(serializer.data)
