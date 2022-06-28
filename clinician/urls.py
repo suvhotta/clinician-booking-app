@@ -16,7 +16,7 @@ book_clinician_availability = views.BookClinicianAvailabilityViewset.as_view({'p
 urlpatterns = [
     path("", include(router.urls)),
     path(r"clinicians/", clinician_viewset),
-    path(r"clinicians/<str:clinician_id>/available-slots/", available_slots_list),
-    path(r"clinicians/<str:clinician_id>/available-slots/<str:availability_id>/", available_slot_details),
+    path(r"clinicians/<str:clinician_id>/available-slots/", available_slots_list, name="available_slots_list"),
+    path(r"clinicians/<str:clinician_id>/available-slots/<str:availability_id>/", available_slot_details, name="available_slot_details"),
     path(r"clinicians/<str:clinician_id>/bookings/", book_clinician_availability, name="book_clinician_availability"),
 ]
